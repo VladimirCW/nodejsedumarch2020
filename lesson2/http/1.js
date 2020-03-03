@@ -5,6 +5,12 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
+
+
+app.listen(port, function () {
+    console.log(`Listening on port ${port}`);
+});
+
 app.on('request', function(request, response) {
     switch (request.method) {
         case "GET": {
@@ -50,10 +56,6 @@ app.on('request', function(request, response) {
         response.writeHead(202, {"first": "second"})
             .end(data);
     });
-});
-
-app.listen(port, function () {
-    console.log(`Listening on port ${port}`);
 });
 //localhost:8000
 //http://127.0.0.1:8000

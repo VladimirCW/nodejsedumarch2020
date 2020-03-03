@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <title>Hello world</title>
+        <script>
+            window.onload = () => {
+                const input = document.getElementById("inputField");
+                const output = document.getElementById("inputResponse");
+                const btn = document.getElementById("inputSubmit");
+                let getValue = function () {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", '/users');
+                    xhr.onload = function() {
+                        output.innerHTML = this.responseText;
+                    };
+                    xhr.onerror = () => {
+                      console.log("Error");
+                    };
+                    xhr.send(input.value);
+                };
+                btn.addEventListener('click', getValue);
+            };
+        </script>
+    </head>
+    <body>
+        <h1>HEllo there</h1>
+        <p>fasdsadasdasdasdasdadad</p>
+        <label for="inputField">Set your value</label>
+        <input id="inputField">
+        <button id="inputSubmit">Submit</button>
+        <div id="inputResponse"></div>
+    </body>
+</html>

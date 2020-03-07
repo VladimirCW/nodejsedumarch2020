@@ -6,7 +6,9 @@
                 const input = document.getElementById("inputField");
                 const output = document.getElementById("inputResponse");
                 const btn = document.getElementById("inputSubmit");
-                let getValue = function () {
+                let getValue = async function () {
+                    let a = await fetch('/users', {method: 'POST', body: "someBody"}).then(result => result.text()).then(data => data);
+                    console.log(a);
                     const xhr = new XMLHttpRequest();
                     xhr.open("POST", '/users');
                     xhr.onload = function() {

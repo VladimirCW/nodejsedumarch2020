@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <script>
+            window.onload = function() {
+                const getAllBtn = document.getElementById("getAllBtn");
+                const getAllOutput = document.getElementById("getAllOutput");
+                const createUserInput = document.getElementById("createUserInput");
+                const createUserOutput = document.getElementById("createUserOutput");
+                const createUserBtn = document.getElementById("createUserBtn");
+
+                function getAllUsers() {
+                    fetch('/users').then(res => res.json()).then(data => {
+                        getAllOutput.innerText = JSON.stringify(data);
+                    });
+                }
+                function createUser() {
+                    const body = createUserInput.value;
+                    const options = {
+                        method: "POST",
+                        body: body,
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    };
+                    fetch('/users', options).then(res => res.text()).then(data => {
+                        createUserOutput.innerText = data;
+                    })
+                }
+
+                getAllBtn.addEventListener("click", getAllUsers);
+                createUserBtn.addEventListener('click', createUser);
+            };
+        </script>
+    </head>
+    <body>
+        <h1>Hello</h1>
+        <h3>Get all users</h3>
+        <form>
+            <div>
+                <button type="button" id="getAllBtn">Get all users</button>
+                <div id="getAllOutput"></div>
+            </div>
+        </form>
+        <h3>Create user</h3>
+        <form>
+            <div>
+                <label for="createUserInput">User content</label>
+                <input id="createUserInput">
+                <button id="createUserBtn" type="button">CREATE</button>
+                <div id="createUserOutput"></div>
+            </div>
+        </form>
+    </body>
+</html>

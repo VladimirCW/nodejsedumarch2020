@@ -9,14 +9,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use('/', express.static('public'));
 app.use((req, res, next) => {
-    console.log("USE FUNC");
     fs.readFile(path.join(__dirname, 'db.json'), (err, data) => {
         if (err) console.log(err);
         const db = data;
-        console.log(db);
-        console.log(db.toString());
         res.locals.db = JSON.parse(db.toString());
-        console.log("Data was read");
         next();
     })
 });
@@ -27,7 +23,6 @@ app.route('/users')
         res.status(200).json(res.locals.db);
     })
     .post((req, res) => {
-        console.log(req.body);
         const userBody = req.body;
         const newId = Object.keys(res.locals.db).length + 1;
         res.locals.db[newId] = userBody;

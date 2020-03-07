@@ -1,17 +1,36 @@
 <html>
     <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script>
             window.onload = function() {
+                const getUserByIdBtn = document.getElementById("getUserByIdBtn");
+                const getUserByIdInput = document.getElementById("getUserByIdInput");
                 const getAllBtn = document.getElementById("getAllBtn");
                 const getAllOutput = document.getElementById("getAllOutput");
                 const createUserInput = document.getElementById("createUserInput");
                 const createUserOutput = document.getElementById("createUserOutput");
                 const createUserBtn = document.getElementById("createUserBtn");
+                const deleteUserOutput = document.getElementById("deleteUserOutput");
+                const deleteUserBtn = document.getElementById("deleteUserBtn");
+                const deleteUserInput = document.getElementById("deleteUserInput");
+                const updateUserBtn = document.getElementById("updateUserBtn");
+                const updateuSerOutput = document.getElementById("updateuSerOutput");
+                const updateUserBodyInput = document.getElementById("updateUserBodyInput");
+                const updateUserIDInput = document.getElementById("updateUserIDInput");
 
                 function getAllUsers() {
                     fetch('/users').then(res => res.json()).then(data => {
                         getAllOutput.innerText = JSON.stringify(data);
                     });
+                }
+                function getUserById() {
+                    const id = getUserByIdInput.value;
+                    fetch(`/users/${id}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            getAllOutput.innerText = JSON.stringify(data);
+                        });
                 }
                 function createUser() {
                     const body = createUserInput.value;
@@ -26,29 +45,84 @@
                         createUserOutput.innerText = data;
                     })
                 }
+                function deleteUser() {
+                    const id = deleteUserInput.value;
+                    const options = {
+                        method: "DELETE"
+                    };
+                    fetch(`/users/${id}`, options)
+                        .then(res => res.text())
+                        .then(data => {
+                            deleteUserOutput.innerText = data;
+                        });
+                }
+                function updateUser() {
+                    const id = updateUserIDInput.value;
+                    const newBody = updateUserBodyInput.value;
+                    const options = {
+                        method: "PUT",
+                        body: newBody,
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    };
+                    fetch(`/users/${id}`, options)
+                        .then(res => res.text())
+                        .then(data => {
+                            updateuSerOutput.innerText = data;
+                        });
+                }
 
                 getAllBtn.addEventListener("click", getAllUsers);
+                getUserByIdBtn.addEventListener("click", getUserById);
                 createUserBtn.addEventListener('click', createUser);
+                deleteUserBtn.addEventListener('click', deleteUser);
+                updateUserBtn.addEventListener("click", updateUser);
             };
         </script>
     </head>
     <body>
-        <h1>Hello</h1>
-        <h3>Get all users</h3>
-        <form>
-            <div>
-                <button type="button" id="getAllBtn">Get all users</button>
-                <div id="getAllOutput"></div>
-            </div>
-        </form>
-        <h3>Create user</h3>
-        <form>
-            <div>
-                <label for="createUserInput">User content</label>
-                <input id="createUserInput">
-                <button id="createUserBtn" type="button">CREATE</button>
-                <div id="createUserOutput"></div>
-            </div>
-        </form>
+        <div class="container">
+            <h1>Hello</h1>
+            <h3>Get users</h3>
+            <form>
+                <div class="form-group">
+                    <label for="getUserByIdInput">ID</label>
+                    <input id="getUserByIdInput" class="form-control">
+                    <button type="button" id="getAllBtn" class="btn btn-info">Get all users</button>
+                    <button type="button" id="getUserByIdBtn" class="btn btn-info">Get by ID</button>
+                    <div id="getAllOutput" class="well"></div>
+                </div>
+            </form>
+            <h3>Create user</h3>
+            <form>
+                <div class="form-group">
+                    <label for="createUserInput">User content</label>
+                    <input id="createUserInput" class="form-control">
+                    <button id="createUserBtn" type="button" class="btn btn-info btn-block">CREATE</button>
+                    <div id="createUserOutput" class="well"></div>
+                </div>
+            </form>
+            <h3>Delete user</h3>
+            <form>
+                <div class="form-group">
+                    <label for="deleteUserInput">ID</label>
+                    <input id="deleteUserInput" class="form-control">
+                    <button id="deleteUserBtn" type="button" class="btn btn-danger btn-block">DELETE</button>
+                    <div id="deleteUserOutput" class="well"></div>
+                </div>
+            </form>
+            <h3>Update user</h3>
+            <form>
+                <div class="form-group">
+                    <label for="updateUserIDInput">ID</label>
+                    <input id="updateUserIDInput" class="form-control">
+                    <label for="updateUserBodyInput">Body</label>
+                    <input id="updateUserBodyInput" class="form-control">
+                    <button id="updateUserBtn" type="button" class="btn btn-warning btn-block">UPDATE</button>
+                    <div id="updateuSerOutput" class="well"></div>
+                </div>
+            </form>
+        </div>
     </body>
 </html>

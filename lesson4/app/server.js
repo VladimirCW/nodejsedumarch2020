@@ -1,11 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const port = 8000;
+const port = 8001;
 const fs = require('fs');
 const path = require('path');
 const MongoClient = require('mongodb').MongoClient;
 const urlDb = 'mongodb+srv://admin:123456aZ@cluster0-qssdp.mongodb.net/test?retryWrites=true&w=majority';
+const ObjectId = require('mongodb').ObjectId;
 
 app.set('view engine', 'pug');
 app.use(bodyParser.json());
@@ -26,7 +27,7 @@ app.use((req, res, next) => {
 //app.use('/album2', express.static('public2'));
 
 MongoClient.connect(urlDb, (err, client) => {
-    if(err) console.log(err);
+    if (err) console.log(err);
     console.log("Connected to db");
     app.listen(port, () => console.log(`Listen on port: '${port}`));
     const collection = client.db('usersDb').collection('users');
@@ -41,35 +42,35 @@ MongoClient.connect(urlDb, (err, client) => {
 
 app.route('/users')
     .get((req, res) => {
-        res.status(200).json(res.locals.db);
+        app.locals.collection.find({}).toArray((err, data) => {
+            //"name": {$in: ["Vova", "Vitya"]
+            res.status(200).json(data);
+        });
     })
     .post((req, res) => {
-        const userBody = req.body;
-        const newId = Object.keys(res.locals.db).length + 1;
-        res.locals.db[newId] = userBody;
-        fs.writeFile(path.join(__dirname, 'db.json'), JSON.stringify(res.locals.db), (err) => {
-            if (err) console.log(err);
-            res.send(`User with id: '${newId}' was created`).end();
+        app.locals.collection.insertOne(req.body, (err, data) => {
+            res.send(`User with id: '${data.ops._id}' was created`).end();
         });
     });
 
 app.route('/users/:id')
     .get((req, res) => {
-        res.status(200).json(res.locals.db[req.params.id]);
-    })
-    .put((req, res) => {
-        const userBody = req.body;
-        const id = req.params.id;
-        res.locals.db[id] = userBody;
-        fs.writeFile(path.join(__dirname, 'db.json'), JSON.stringify(res.locals.db), (err) => {
-            if (err) console.log(err);
-            res.send(`User with id: '${id}' was updated`).end();
+        app.locals.collection.findOne({ _id: ObjectId(req.params.id) }, (err, data) => {
+            res.status(200).json(data);
         });
     })
+    .put((req, res) => {
+        app.locals.collection.findOneAndUpdate(
+            { _id: ObjectId(req.params.id) },
+            { $set: req.body },
+            { returnNewDocument: false },
+            (err, data) => {
+                console.log(data);
+                res.send(`User with id: '${data.value._id}' was updated`).end();
+            });
+    })
     .delete((req, res) => {
-        delete res.locals.db[req.params.id];
-        fs.writeFile(path.join(__dirname, 'db.json'), JSON.stringify(res.locals.db), (err) => {
-            if (err) console.log(err);
-            res.send(`User with id: '${req.params.id}' was deleted`).end();
+        app.locals.collection.findOneAndDelete({ _id: ObjectId(req.params.id) }, (err, data) => {
+            res.send(`User with id: '${data.value._id}' was deleted`).end();
         });
     });

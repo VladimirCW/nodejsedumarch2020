@@ -4,10 +4,17 @@ const app = express();
 const port = 8000;
 const fs = require('fs');
 const path = require('path');
+const MongoClient = require('mongodb').MongoClient;
+const urlDb = 'mongodb+srv://admin:123456aZ@cluster0-qssdp.mongodb.net/test?retryWrites=true&w=majority';
 
+app.set('view engine', 'pug');
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use('/', express.static('public'));
+/*app.get('/', (req, res) => {
+    res.render('index', {name: "Vova", age: 20});
+});*/
+
 app.use((req, res, next) => {
     fs.readFile(path.join(__dirname, 'db.json'), (err, data) => {
         if (err) console.log(err);
@@ -17,6 +24,20 @@ app.use((req, res, next) => {
     })
 });
 //app.use('/album2', express.static('public2'));
+
+MongoClient.connect(urlDb, (err, client) => {
+    if(err) console.log(err);
+    console.log("Connected to db");
+    app.listen(port, () => console.log(`Listen on port: '${port}`));
+    const collection = client.db('usersDb').collection('users');
+    app.locals.collection = collection;
+
+    process.on('SIGINT', () => {
+        console.log("Close process");
+        client.close();
+        process.exit();
+    });
+});
 
 app.route('/users')
     .get((req, res) => {
@@ -52,5 +73,3 @@ app.route('/users/:id')
             res.send(`User with id: '${req.params.id}' was deleted`).end();
         });
     });
-
-app.listen(port, () => console.log(`Listen on port: '${port}`));

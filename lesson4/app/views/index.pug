@@ -1,0 +1,14 @@
+html
+    include header
+    body
+        div.container
+            //sdfsdf
+            h1 Hello user '#{name}' your age is #{age}
+            h3="Get users"
+            form
+                div.form-group
+                    input#getUserByIdInput.form-control
+                    - let arr = ["AAA", "BB", "CCC"]
+                    ul
+                        each el in arr
+                            li(id='s'+ el)=el

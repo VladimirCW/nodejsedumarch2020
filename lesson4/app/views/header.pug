@@ -1,0 +1,98 @@
+head
+    meta(charset="UTF-8")
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css")
+    script.
+        window.onload = function () {
+            const getUserByIdBtn = document.getElementById("getUserByIdBtn");
+            const getUserByIdInput = document.getElementById("getUserByIdInput");
+            const getAllBtn = document.getElementById("getAllBtn");
+            const getAllOutput = document.getElementById("getAllOutput");
+            const createUserInput = document.getElementById("createUserInput");
+            const createUserOutput = document.getElementById("createUserOutput");
+            const createUserBtn = document.getElementById("createUserBtn");
+            const deleteUserOutput = document.getElementById("deleteUserOutput");
+            const deleteUserBtn = document.getElementById("deleteUserBtn");
+            const deleteUserInput = document.getElementById("deleteUserInput");
+            const updateUserBtn = document.getElementById("updateUserBtn");
+            const updateuSerOutput = document.getElementById("updateuSerOutput");
+            const updateUserBodyInput = document.getElementById("updateUserBodyInput");
+            const updateUserIDInput = document.getElementById("updateUserIDInput");
+
+            function getAllUsers() {
+                fetch('/users').then(res => res.json()
+            ).
+                then(data => {
+                    getAllOutput.innerText = JSON.stringify(data);
+            })
+                ;
+            }
+
+            function getUserById() {
+                const id = getUserByIdInput.value;
+                fetch(`/users/${id}`)
+                    .then(res => res.json()
+            )
+            .
+                then(data => {
+                    getAllOutput.innerText = JSON.stringify(data);
+            })
+                ;
+            }
+
+            function createUser() {
+                const body = createUserInput.value;
+                const options = {
+                    method : "POST",
+                    body   : body,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                };
+                fetch('/users', options).then(res => res.text()
+            ).
+                then(data => {
+                    createUserOutput.innerText = data;
+            })
+            }
+
+            function deleteUser() {
+                const id = deleteUserInput.value;
+                const options = {
+                    method: "DELETE"
+                };
+                fetch(`/users/${id}`, options)
+                    .then(res => res.text()
+            )
+            .
+                then(data => {
+                    deleteUserOutput.innerText = data;
+            })
+                ;
+            }
+
+            function updateUser() {
+                const id = updateUserIDInput.value;
+                const newBody = updateUserBodyInput.value;
+                const options = {
+                    method : "PUT",
+                    body   : newBody,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                };
+                fetch(`/users/${id}`, options)
+                    .then(res => res.text()
+            )
+            .
+                then(data => {
+                    updateuSerOutput.innerText = data;
+            })
+                ;
+            }
+
+            getAllBtn.addEventListener("click", getAllUsers);
+            getUserByIdBtn.addEventListener("click", getUserById);
+            createUserBtn.addEventListener('click', createUser);
+            deleteUserBtn.addEventListener('click', deleteUser);
+            updateUserBtn.addEventListener("click", updateUser);
+        };

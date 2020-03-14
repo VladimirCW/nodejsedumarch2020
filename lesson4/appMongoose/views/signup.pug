@@ -1,0 +1,43 @@
+html
+    head
+        include header
+        script.
+            window.onload = function() {
+                const signupName = document.getElementById("signupName");
+                const signippassw = document.getElementById("signippassw");
+                const signUpEmail = document.getElementById("signUpEmail");
+                const signupSubmit = document.getElementById("signupSubmit");
+                const signUpOutput = document.getElementById("signUpOutput");
+                function createUser() {
+                    const body = {
+                        name: signupName.value,
+                        password: signippassw.value,
+                        email: signUpEmail.value
+                    }
+                    const option = {
+                        method: "POST",
+                        body: JSON.stringify(body),
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }
+                    fetch('/userlogins', option)
+                        .then(res => res.text())
+                        .then(data => {
+                            signUpOutput.innerText = data;
+                        });
+                }
+                signupSubmit.addEventListener("click", createUser);
+            }
+    body
+        h1 Signup user
+        form
+            div
+                label(for="signupName") Name
+                input#signupName
+                label(for="signippassw") Password
+                input#signippassw
+                label(for="signUpEmail") Email
+                input#signUpEmail
+                button#signupSubmit(type="button") Create
+                div#signUpOutput

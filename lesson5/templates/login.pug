@@ -1,0 +1,40 @@
+html
+    head
+        include header
+        script.
+            window.onload = function() {
+                const loginName = document.getElementById("loginName");
+                const loginPassword = document.getElementById("loginPassword");
+                const loginOutput = document.getElementById("loginOutput");
+                const loginSubmit = document.getElementById("loginSubmit");
+                function login() {
+                    const body = {
+                        name: loginName.value,
+                        password: loginPassword.value
+                    }
+                    const options = {
+                        method: "POST",
+                        body: JSON.stringify(body),
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }
+                    fetch('/login', options)
+                        .then(res => res.json())
+                        .then(data => {
+                                localStorage.setItem("token", data.token);
+                                loginOutput.innerText = JSON.stringify(data);
+                        });
+                }
+                loginSubmit.addEventListener("click", login);
+            };
+    body
+        h3 LOGIN
+        form
+            div
+                label(for="loginName") Name
+                input#loginName
+                label(for="loginPassword") Password
+                input#loginPassword
+                button#loginSubmit(type="button") LOGIN
+                div#loginOutput

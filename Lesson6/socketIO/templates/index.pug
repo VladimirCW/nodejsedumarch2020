@@ -1,0 +1,56 @@
+html
+    head
+        script(src="/socket.io/socket.io.js")
+        script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js")
+        script.
+            window.onload = function() {
+                const messageOutput = document.getElementById("messageOutput");
+                const messageInput = document.getElementById("messageInput");
+                const messageBtn = document.getElementById("messageBtn");
+                const messageOutputAdmin = document.getElementById("messageOutputAdmin");
+                const messageInputAdmin = document.getElementById("messageInputAdmin");
+                const messageBtnAdmin = document.getElementById("messageBtnAdmin");
+
+
+                const socket = io().connect('http://localhost:8000');
+                const socketAdmin = io('/admin');
+                socket.on('connection', function (socket) {
+                    console.log('a user connected');
+                    socket.on('disconnect', function () {
+                        console.log('user disconnected');
+                    });
+                });
+
+                socket.on('chat message', (msg) => {
+                    $('#messageOutput').append($('<p>' + msg + '</p>'));
+                });
+                socketAdmin.on('chat message', (msg) => {
+                    $('#messageOutputAdmin').append($('<p>' + msg + '</p>'))
+                })
+
+                function sendMessage(event) {
+                    event.preventDefault();
+                    const message = messageInput.value;
+                    socket.emit('chat message', message);
+                    messageInput.value = '';
+                };
+                function sendMessageAdmin(event) {
+                    event.preventDefault();
+                    const message = messageInputAdmin.value;
+                    socketAdmin.emit('chat message', message);
+                    messageInputAdmin.value = '';
+                }
+                messageBtn.addEventListener('click', sendMessage);
+                messageBtnAdmin.addEventListener('click', sendMessageAdmin)
+            }
+    body
+        form
+            div
+                div#messageOutput
+                input#messageInput
+                button#messageBtn(type="button") Send
+        form
+            div
+                div#messageOutputAdmin
+                input#messageInputAdmin
+                button#messageBtnAdmin(type="button") Send

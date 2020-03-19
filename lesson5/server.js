@@ -33,3 +33,5 @@ mongoose.connect(urlDb, {
         process.exit();
     });
 });
+
+module.exports = app;

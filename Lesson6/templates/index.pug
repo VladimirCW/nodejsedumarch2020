@@ -1,0 +1,15 @@
+html
+    head
+        script.
+            window.onload = function() {
+                const socket = new WebSocket("ws://localhost:8000");
+                socket.onmessage = function (event) {
+                    console.log(event.data);
+                };
+            }
+    body
+        form
+            div
+                div#messageOutput
+                input#messageInput
+                button#messageBtn(type="button") Send
